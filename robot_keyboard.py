@@ -83,7 +83,15 @@ def main(window):
     next_key = None
     
     window.clear()
-    window.addstr("Winbot Keyboard Control")
+    window.addstr("Winbot Keyboard Control", curses.color_pair(1)|curses.A_BOLD)
+    window.immedok(True)
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    window.bkgd(curses.color_pair(2))
+    window.border(0)
+    boxed = curses.newwin(curses.LINES - 2, curses.COLS - 2, 1, 1)
+    boxed.scrollok(1)
     try:
       while True:
         curses.halfdelay(1)
@@ -97,8 +105,8 @@ def main(window):
             curses.halfdelay(3)
             action = actions.get(key)
             
-            window.addstr("¬n")
-            window.addstr(action.__name__)
+            boxed.addstr("\n")
+            boxed.addstr(action.__name__)
             if action is not None:
                 action()
             next_key = key

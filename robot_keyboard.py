@@ -4,7 +4,6 @@ import RPi.GPIO as GPIO
 from time import sleep
 import curses
 
-
 #left motor
 ENABLE_LEFT=5
 FORWARD_LEFT=7
@@ -76,10 +75,15 @@ actions = {
     curses.KEY_LEFT: left,
     curses.KEY_RIGHT: right,
     }
-    
+
+def quit():
+    curses.endwin()
+
 def main(window):
     next_key = None
-    print("Control E-bot by keyboard")
+    
+    window.clear()
+    window.addstr("Winbot Keyboard Control")
     try:
       while True:
         curses.halfdelay(1)
@@ -92,6 +96,9 @@ def main(window):
             #KEY DOWN
             curses.halfdelay(3)
             action = actions.get(key)
+            
+            window.addstr("¬n")
+            window.addstr(action.__name__)
             if action is not None:
                 action()
             next_key = key

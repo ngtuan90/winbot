@@ -83,7 +83,6 @@ def main(window):
     next_key = None
     
     window.clear()
-    window.addstr("Winbot Keyboard Control", curses.color_pair(1)|curses.A_BOLD)
     window.immedok(True)
     curses.start_color()
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -92,8 +91,10 @@ def main(window):
     window.border(0)
     boxed = curses.newwin(curses.LINES - 2, curses.COLS - 2, 1, 1)
     boxed.scrollok(1)
+    boxed.addstr("Winbot Keyboard Control", curses.color_pair(1)|curses.A_BOLD)
+    boxed.refresh()
     try:
-      while True:
+      while next_key != 27:
         curses.halfdelay(1)
         if next_key is None:
             key = window.getch()
@@ -102,18 +103,22 @@ def main(window):
             next_key = None
         if key != -1:
             #KEY DOWN
-            curses.halfdelay(3)
+            curses.halfdelay(2)
             action = actions.get(key)
-            
-            boxed.addstr("\n")
-            boxed.addstr(action.__name__)
             if action is not None:
+                boxed.addstr("\n")
+                boxed.addstr(action.__name__)
                 action()
             next_key = key
             while next_key == key:
                 next_key = window.getch()
             #KEY UP
             stop()
+            window.refresh()
+            boxed.refresh()
+        curses.endwin()
+    except Exception, e:
+        boxed.addstr("Exception")
         
     finally:
         GPIO.cleanup()

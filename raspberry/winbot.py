@@ -14,34 +14,34 @@ BACKWARD_RIGHT=37
 MOTOR = [ENABLE_LEFT,FORWARD_LEFT,BACKWARD_LEFT,ENABLE_RIGHT,FORWARD_RIGHT,BACKWARD_RIGHT]
 
 class Winbot:
-    def motor_setup():    
+    def motor_setup(self): 
         #GPIO Config
         GPIO.setmode(GPIO.BOARD)
         GPIO.setwarnings(False)
         for val in MOTOR:
             GPIO.setup(val, GPIO.OUT)
 
-    def left_forward():
+    def left_forward(self):
         GPIO.output(ENABLE_LEFT,1)
         GPIO.output(FORWARD_LEFT,1)
         GPIO.output(BACKWARD_LEFT,0)
 
-    def right_forward():
+    def right_forward(self):
         GPIO.output(ENABLE_RIGHT,1)
         GPIO.output(FORWARD_RIGHT,1)
         GPIO.output(BACKWARD_RIGHT,0)
 
-    def left_backward():
+    def left_backward(self):
         GPIO.output(ENABLE_LEFT,1)
         GPIO.output(FORWARD_LEFT,0)
         GPIO.output(BACKWARD_LEFT,1)
 
-    def right_backward():
+    def right_backward(self):
         GPIO.output(ENABLE_RIGHT,1)
         GPIO.output(FORWARD_RIGHT,0)
         GPIO.output(BACKWARD_RIGHT,1)
 
-    def stop():
+    def stop(self):
         GPIO.output(ENABLE_LEFT,0)
         GPIO.output(FORWARD_LEFT,0)
         GPIO.output(BACKWARD_LEFT,0)

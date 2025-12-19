@@ -1,0 +1,16 @@
+[Unit]
+Description=WebSocket Robot Server
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/winbot/raspberry
+ExecStart=/usr/bin/python3 /home/pi/winbot/raspberry/server.py
+Restart=always
+RestartSec=2
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

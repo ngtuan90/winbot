@@ -3,7 +3,7 @@ import json
 import websockets
 import keyboard  # pip install keyboard
 
-PI_IP = "192.168.1.185"   # change this
+PI_IP = "192.168.4.179"   # change this
 PORT = 8765
 
 async def send_commands():

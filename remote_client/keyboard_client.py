@@ -1,36 +1,68 @@
 import asyncio
 import json
 import websockets
-import keyboard  # pip install keyboard
+import pygame
 
-PI_IP = "192.168.4.179"   # change this
+PI_IP = "192.168.4.179"    # CHANGE THIS
 PORT = 8765
 
-async def send_commands():
+SPEED_MIN = 20
+SPEED_MAX = 90
+SPEED_STEP = 5
+
+SEND_RATE = 0.05  # 20 Hz
+
+
+async def main():
+    pygame.init()
+    screen = pygame.display.set_mode((200, 200))
+    pygame.display.set_caption("Winbot Keyboard Control")
+
+    speed = 50  # default speed
+
     uri = f"ws://{PI_IP}:{PORT}"
 
     async with websockets.connect(uri) as ws:
-        print("Connected to robot")
-
-        last_cmd = None
+        print("⌨️ Keyboard control connected")
 
         while True:
-            if keyboard.is_pressed("w"):
-                cmd = "forward"
-            elif keyboard.is_pressed("s"):
-                cmd = "backward"
-            elif keyboard.is_pressed("a"):
-                cmd = "left"
-            elif keyboard.is_pressed("d"):
-                cmd = "right"
-            else:
-                cmd = "stop"
+            linear = 0
+            angular = 0
 
-            if cmd != last_cmd:
-                msg = json.dumps({"cmd": cmd})
-                await ws.send(msg)
-                last_cmd = cmd
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
 
-            await asyncio.sleep(0.05)  # 20 Hz update
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_x:
+                        speed = min(SPEED_MAX, speed + SPEED_STEP)
+                        print(f"⬆ Speed: {speed}")
 
-asyncio.run(send_commands())
+                    if event.key == pygame.K_y:
+                        speed = max(SPEED_MIN, speed - SPEED_STEP)
+                        print(f"⬇ Speed: {speed}")
+
+            keys = pygame.key.get_pressed()
+
+            # Movement
+            if keys[pygame.K_w]:
+                linear = 1.0
+            elif keys[pygame.K_s]:
+                linear = -1.0
+
+            if keys[pygame.K_a]:
+                angular = -1.0
+            elif keys[pygame.K_d]:
+                angular = 1.0
+
+            msg = {
+                "linear": linear,
+                "angular": angular,
+                "speed": speed
+            }
+
+            await ws.send(json.dumps(msg))
+            await asyncio.sleep(SEND_RATE)
+
+
+asyncio.run(main())
